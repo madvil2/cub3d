@@ -1,21 +1,31 @@
 NAME := cub3D
 
+# Detect OS
+UNAME_S := $(shell uname -s)
+
 # Paths
 SRC_PATH := src/
 INC_PATH := includes/
 OBJ_PATH := .obj/
 LIB_PATH := libft/
-MLX_PATH := minilibx-linux/
-#MLX_PATH := minilibx_opengl_20191021/
+
+# MLX path and flags based on OS
+ifeq ($(UNAME_S),Linux)
+	MLX_PATH := minilibx-linux/
+	LFLAGS := -L $(LIB_PATH) -lft -L $(MLX_PATH) -lmlx_Linux -L/usr/lib -I $(MLX_PATH) -lXext -lX11 -lm -lz
+else ifeq ($(UNAME_S),Darwin)
+	MLX_PATH := minilibx_opengl_20191021/
+	LFLAGS := -L $(LIB_PATH) -lft -L $(MLX_PATH) -lmlx -framework OpenGL -framework AppKit
+else
+	$(error Unsupported operating system)
+endif
 
 # Compiler and flags
 CC := cc
 CFLAGS := -Wall -Werror -Wextra -g
 IFLAGS := -I $(INC_PATH) -I $(LIB_PATH) -I $(MLX_PATH)
-LFLAGS := -L $(LIB_PATH) -lft -L $(MLX_PATH) -lmlx_Linux -L/usr/lib -I $(MLX_PATH) -lXext -lX11 -lm -lz
-#LFLAGS := -L $(LIB_PATH) -lft -L $(MLX_PATH) -lmlx -framework OpenGL -framework AppKit
 
-# Valgrind flags
+# Valgrind flags (only used on Linux)
 VALGRIND := valgrind
 VFLAGS := --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose
 
@@ -44,7 +54,10 @@ $(NAME): $(MLX) $(LIB) $(OBJS)
 
 $(MLX):
 	@if [ ! -d "$(MLX_PATH)" ]; then \
-		echo "Error: MLX library not found"; \
+		echo "Error: MLX library not found at $(MLX_PATH)"; \
+		echo "Please install the appropriate version:"; \
+		echo "- For Linux: minilibx-linux"; \
+		echo "- For MacOS: minilibx_opengl_20191021"; \
 		exit 1; \
 	fi
 	$(MAKE) -C $(MLX_PATH)
@@ -78,8 +91,12 @@ mfclean: mclean
 
 mre: mfclean all
 
-# Valgrind rule
+# Valgrind rule (Linux only)
 valgrind: $(NAME)
-	$(VALGRIND) $(VFLAGS) ./$(NAME) maps/1.cub
+ifeq ($(UNAME_S),Linux)
+	$(VALGRIND) $(VFLAGS) ./$(NAME) maps/example.cub
+else
+	@echo "Valgrind is not available on macOS. Try 'leaks' instead."
+endif
 
 .PHONY: all clean fclean re mclean mfclean mre valgrind
