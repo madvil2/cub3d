@@ -187,63 +187,33 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
     double tex_pos;
     int line_height = draw_end - draw_start;
     
-    // Safety checks
-    if (line_height <= 0)
-        line_height = 1;
-    
-    // Make sure tex_x is within valid range
-    if (tex_x >= tex->width)
-        tex_x = tex->width - 1;
-    if (tex_x < 0)
-        tex_x = 0;
-    
     // Get texture data
     tex_data = mlx_get_data_addr(tex->img, &tex_bpp, &tex_line_size, &tex_endian);
     
-    // For close walls (perpWallDist < 1.0), we need to handle texture mapping differently
-    if (perp_wall_dist < 0.5)
-    {
-        // When we're very close, show only middle part of texture and "zoom in"
-        double proximity_factor = 0.5 / perp_wall_dist;
-        if (proximity_factor > 10.0) 
-            proximity_factor = 10.0;  // Limit zoom
-        
-        // Only display middle section of texture (more zoomed in = smaller section)
-        double visible_portion = 1.0 / proximity_factor;
-        
-        // Start from middle of texture, then offset to show visible portion
-        double center_y = tex->height / 2.0;
-        tex_pos = center_y - (visible_portion * tex->height / 2.0);
-        
-        // Calculate step - smaller for closer walls (more detail)
-        step = (visible_portion * tex->height) / line_height;
-    }
-    else
-    {
-        // Normal distance - map full texture
-        tex_pos = 0;
-        step = (double)tex->height / line_height;
-    }
+    // Calculate step size (how much to increase texture coordinate per screen pixel)
+    step = (double)tex->height / (double)line_height;
+    
+    // Starting texture position
+    tex_pos = 0;
+    if (draw_start < 0)
+        tex_pos = step * -draw_start;
     
     // Draw the vertical line pixel by pixel
     y = draw_start;
-    while (y < draw_end)
-    {
-        // Ensure tex_y is in valid range
-        tex_y = (int)tex_pos;
-        if (tex_y >= tex->height) 
-            tex_y = tex->height - 1;
-        if (tex_y < 0) 
-            tex_y = 0;
+    if (y < 0)
+        y = 0;
         
-        // Get color from texture at tex_x, tex_y
+    while (y < draw_end && y < WINDOW_HEIGHT)
+    {
+        // Calculate texture Y coordinate
+        tex_y = (int)tex_pos & (tex->height - 1);
+        tex_pos += step;
+        
+        // Get color from texture
         color = *(unsigned int*)(tex_data + (tex_y * tex_line_size + tex_x * (tex_bpp / 8)));
         
         // Draw pixel
         draw_pixel(&game->img, x, y, color);
-        
-        // Move to next texture position
-        tex_pos += step;
         y++;
     }
 }
@@ -270,48 +240,39 @@ void    render_3d_view(t_game *game)
     t_texture *tex;
     int tex_x;
     double wall_x;
-    static int debug_count = 0;
-
-    // Draw ceiling
+    
+    // Draw ceiling and floor
     for (int y = 0; y < WINDOW_HEIGHT / 2; y++)
+    {
         for (int x = 0; x < WINDOW_WIDTH; x++)
+        {
+            // Ceiling (top half)
             draw_pixel(&game->img, x, y, 
-                (game->config.ceiling.r << 16) | 
-                (game->config.ceiling.g << 8) | 
-                game->config.ceiling.b);
-
-    // Draw floor
-    for (int y = WINDOW_HEIGHT / 2; y < WINDOW_HEIGHT; y++)
-        for (int x = 0; x < WINDOW_WIDTH; x++)
-            draw_pixel(&game->img, x, y, 
-                (game->config.floor.r << 16) | 
-                (game->config.floor.g << 8) | 
-                game->config.floor.b);
-
+                (game->config.ceiling.r << 16) | (game->config.ceiling.g << 8) | game->config.ceiling.b);
+            
+            // Floor (bottom half)
+            draw_pixel(&game->img, x, WINDOW_HEIGHT - 1 - y, 
+                (game->config.floor.r << 16) | (game->config.floor.g << 8) | game->config.floor.b);
+        }
+    }
+    
     // Raycasting loop
     for (int x = 0; x < WINDOW_WIDTH; x++)
     {
-        camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
+        // Calculate ray position and direction
+        camera_x = 2 * x / (double)WINDOW_WIDTH - 1; // x-coordinate in camera space
         ray_dir_x = game->player.dir_x + game->player.plane_x * camera_x;
         ray_dir_y = game->player.dir_y + game->player.plane_y * camera_x;
-
-        // Debug middle ray every 60 frames
-        if (debug_count++ % 60 == 0 && x == WINDOW_WIDTH / 2)
-        {
-            printf("\n=== DEBUG: Ray Casting Info ===\n");
-            printf("Ray direction: (%f, %f)\n", ray_dir_x, ray_dir_y);
-            printf("Camera plane: (%f, %f)\n", game->player.plane_x, game->player.plane_y);
-            printf("Camera X: %f\n", camera_x);
-        }
-
+        
+        // Which box of the map we're in
         map_x = (int)game->player.x;
         map_y = (int)game->player.y;
-
+        
+        // Length of ray from current position to next x or y-side
         delta_dist_x = fabs(1 / ray_dir_x);
         delta_dist_y = fabs(1 / ray_dir_y);
-
-        hit = 0;
         
+        // Calculate step and initial sideDist
         if (ray_dir_x < 0)
         {
             step_x = -1;
@@ -322,6 +283,7 @@ void    render_3d_view(t_game *game)
             step_x = 1;
             side_dist_x = (map_x + 1.0 - game->player.x) * delta_dist_x;
         }
+        
         if (ray_dir_y < 0)
         {
             step_y = -1;
@@ -332,84 +294,77 @@ void    render_3d_view(t_game *game)
             step_y = 1;
             side_dist_y = (map_y + 1.0 - game->player.y) * delta_dist_y;
         }
-
+        
         // DDA algorithm
+        hit = 0;
         while (hit == 0)
         {
+            // Jump to next map square
             if (side_dist_x < side_dist_y)
             {
                 side_dist_x += delta_dist_x;
                 map_x += step_x;
-                side = 0;
+                side = 0; // X side hit
             }
             else
             {
                 side_dist_y += delta_dist_y;
                 map_y += step_y;
-                side = 1;
+                side = 1; // Y side hit
             }
+            
+            // Check if ray has hit a wall
             if (game->config.map.grid[map_y][map_x] == '1')
                 hit = 1;
         }
-
+        
+        // Calculate distance projected on camera direction
         if (side == 0)
-            perp_wall_dist = (side_dist_x - delta_dist_x);
+            perp_wall_dist = (map_x - game->player.x + (1 - step_x) / 2) / ray_dir_x;
         else
-            perp_wall_dist = (side_dist_y - delta_dist_y);
-
-        // Calculate line height based on distance
+            perp_wall_dist = (map_y - game->player.y + (1 - step_y) / 2) / ray_dir_y;
+        
+        // Calculate height of line to draw on screen
         line_height = (int)(WINDOW_HEIGHT / perp_wall_dist);
         
         // Calculate lowest and highest pixel to fill in current stripe
         draw_start = -line_height / 2 + WINDOW_HEIGHT / 2;
         if (draw_start < 0)
             draw_start = 0;
+            
         draw_end = line_height / 2 + WINDOW_HEIGHT / 2;
         if (draw_end >= WINDOW_HEIGHT)
             draw_end = WINDOW_HEIGHT - 1;
-
-        // Calculate texture coordinates
+        
+        // Texture selection and wall X coordinate calculation
         if (side == 0)
         {
+            // Vertical wall hit
             wall_x = game->player.y + perp_wall_dist * ray_dir_y;
             if (ray_dir_x > 0)
-                tex = &game->config.east;
-            else
                 tex = &game->config.west;
+            else
+                tex = &game->config.east;
         }
         else
         {
+            // Horizontal wall hit
             wall_x = game->player.x + perp_wall_dist * ray_dir_x;
             if (ray_dir_y > 0)
-                tex = &game->config.south;
-            else
                 tex = &game->config.north;
+            else
+                tex = &game->config.south;
         }
         
-        // Take only fractional part of wall_x
+        // We only need the fractional part of wall_x
         wall_x -= floor(wall_x);
         
         // Calculate x coordinate on the texture
         tex_x = (int)(wall_x * tex->width);
-        
-        // Flip texture x coordinate if needed
         if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
             tex_x = tex->width - tex_x - 1;
-
-        if (debug_count % 60 == 1 && x == WINDOW_WIDTH / 2)
-        {
-            printf("\n=== DEBUG: Wall Hit Info ===\n");
-            printf("Wall hit at: (%d, %d)\n", map_x, map_y);
-            printf("Perpendicular wall distance: %f\n", perp_wall_dist);
-            printf("Line height: %d\n", line_height);
-            printf("Draw range: %d to %d\n", draw_start, draw_end);
-            printf("Wall X: %f\n", wall_x);
-            printf("Texture X: %d\n", tex_x);
-            printf("Texture size: %dx%d\n", tex->width, tex->height);
-            printf("Side hit: %s\n", side == 0 ? "Vertical" : "Horizontal");
-        }
-
-        // Pass the perpendicular wall distance to the drawing function
+        
+        // Draw the textured vertical line
         draw_vertical_line(game, x, draw_start, draw_end, tex_x, tex, perp_wall_dist);
     }
 }
