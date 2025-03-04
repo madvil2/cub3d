@@ -185,76 +185,64 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
     int tex_endian;
     double step;
     double tex_pos;
-    static int debug_count = 0;
     int line_height = draw_end - draw_start;
-
-    // Make sure texture_x is within bounds of texture width
-    tex_x = tex_x % tex->width;
+    
+    // Safety checks
+    if (line_height <= 0)
+        line_height = 1;
+    
+    // Make sure tex_x is within valid range
+    if (tex_x >= tex->width)
+        tex_x = tex->width - 1;
     if (tex_x < 0)
-        tex_x += tex->width;
-        
+        tex_x = 0;
+    
+    // Get texture data
     tex_data = mlx_get_data_addr(tex->img, &tex_bpp, &tex_line_size, &tex_endian);
     
-    // Debug info for one line every 60 frames
-    if (debug_count++ % 60 == 0 && x == WINDOW_WIDTH / 2)
-    {
-        printf("\n=== DEBUG: Vertical Line Drawing ===\n");
-        printf("Drawing at x=%d\n", x);
-        printf("Draw range: %d to %d (height: %d)\n", draw_start, draw_end, draw_end - draw_start);
-        printf("Wall distance: %f\n", perp_wall_dist);
-        printf("Texture X: %d\n", tex_x);
-        printf("Texture size: %dx%d\n", tex->width, tex->height);
-    }
-    
-    // Calculate how much to increase the texture coordinate per screen pixel
-    step = 1.0 * tex->height / line_height;
-    
-    // For very close walls, start from the middle of the texture and show a zoomed portion
+    // For close walls (perpWallDist < 1.0), we need to handle texture mapping differently
     if (perp_wall_dist < 0.5)
     {
-        // Calculate center of the texture
-        double center_tex_y = tex->height / 2.0;
+        // When we're very close, show only middle part of texture and "zoom in"
+        double proximity_factor = 0.5 / perp_wall_dist;
+        if (proximity_factor > 10.0) 
+            proximity_factor = 10.0;  // Limit zoom
         
-        // Calculate zoom factor based on distance (closer = more zoom)
-        double zoom_factor = 0.5 / perp_wall_dist;
-        if (zoom_factor > 5.0) zoom_factor = 5.0; // Limit maximum zoom
+        // Only display middle section of texture (more zoomed in = smaller section)
+        double visible_portion = 1.0 / proximity_factor;
         
-        // Calculate visible texture height (smaller = more zoom)
-        double visible_tex_height = tex->height / zoom_factor;
+        // Start from middle of texture, then offset to show visible portion
+        double center_y = tex->height / 2.0;
+        tex_pos = center_y - (visible_portion * tex->height / 2.0);
         
-        // Calculate starting texture position
-        tex_pos = center_tex_y - (visible_tex_height / 2.0);
-        
-        // Recalculate step
-        step = visible_tex_height / line_height;
-        
-        if (debug_count % 60 == 1 && x == WINDOW_WIDTH / 2)
-        {
-            printf("Close wall! Zoom factor: %f\n", zoom_factor);
-            printf("Visible texture height: %f\n", visible_tex_height);
-            printf("Starting tex_pos: %f\n", tex_pos);
-        }
+        // Calculate step - smaller for closer walls (more detail)
+        step = (visible_portion * tex->height) / line_height;
     }
     else
     {
-        // For normal distances, start from the top of the texture
+        // Normal distance - map full texture
         tex_pos = 0;
+        step = (double)tex->height / line_height;
     }
     
+    // Draw the vertical line pixel by pixel
     y = draw_start;
     while (y < draw_end)
     {
-        // Use modulo for safe texture wrapping
-        tex_y = ((int)tex_pos) % tex->height;
-        if (tex_y < 0)
-            tex_y += tex->height;
+        // Ensure tex_y is in valid range
+        tex_y = (int)tex_pos;
+        if (tex_y >= tex->height) 
+            tex_y = tex->height - 1;
+        if (tex_y < 0) 
+            tex_y = 0;
         
-        if (tex_x >= 0 && tex_x < tex->width && tex_y >= 0 && tex_y < tex->height)
-        {
-            color = *(unsigned int*)(tex_data + (tex_y * tex_line_size + tex_x * (tex_bpp / 8)));
-            draw_pixel(&game->img, x, y, color);
-        }
+        // Get color from texture at tex_x, tex_y
+        color = *(unsigned int*)(tex_data + (tex_y * tex_line_size + tex_x * (tex_bpp / 8)));
         
+        // Draw pixel
+        draw_pixel(&game->img, x, y, color);
+        
+        // Move to next texture position
         tex_pos += step;
         y++;
     }
