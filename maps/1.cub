@@ -1,0 +1,14 @@
+C 255,0           ,   0
+NO ./assets/dungeon_walls/NO.xpm
+SO ./assets/dungeon_walls/SO.xpm
+WE ./assets/dungeon_walls/WE.xpm
+EA ./assets/dungeon_walls/EA.xpm
+
+F 50,50     ,  50
+
+11111111111111
+11110000000011
+10000000000011
+10000000000011
+1011000E111011
+11111111111111
