@@ -114,4 +114,7 @@ void    load_textures(t_game *game);
 void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, int tex_x, t_texture *tex, double perp_wall_dist);
 void    render_3d_view(t_game *game);
 
+// Forward declarations for static functions in render.c
+static void render_ray(t_game *game, int x, double ray_dir_x, double ray_dir_y);
+
 #endif 
