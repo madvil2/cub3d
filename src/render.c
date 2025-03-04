@@ -186,6 +186,7 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
     double step;
     double tex_pos;
     static int debug_count = 0;
+    int line_height = draw_end - draw_start;
 
     // Make sure texture_x is within bounds of texture width
     tex_x = tex_x % tex->width;
@@ -205,9 +206,24 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
         printf("Texture data: bpp=%d, line_size=%d\n", tex_bpp, tex_line_size);
     }
     
-    // Calculate step size for texture coordinate
-    step = 1.0 * tex->height / (draw_end - draw_start);
-    tex_pos = 0;
+    // Calculate texture step size - this handles wall scaling
+    if (line_height == 0)
+        line_height = 1;  // Prevent division by zero
+        
+    // If line_height > WINDOW_HEIGHT, we're very close to the wall
+    // and need to only show part of the texture (scaled)
+    if (line_height > WINDOW_HEIGHT)
+    {
+        // Calculate which part of the texture to show
+        tex_pos = (draw_start - (WINDOW_HEIGHT / 2) + (line_height / 2)) * (tex->height / (double)line_height);
+        step = tex->height / (double)line_height;
+    }
+    else
+    {
+        // Regular case - map full texture to line height
+        step = tex->height / (double)line_height;
+        tex_pos = 0;
+    }
     
     y = draw_start;
     while (y < draw_end)
@@ -221,7 +237,7 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
         if (debug_count % 60 == 1 && x == WINDOW_WIDTH / 2 && y == draw_start)
         {
             printf("First pixel: y=%d, tex_y=%d, step=%f\n", y, tex_y, step);
-            printf("Texture position: %f\n", tex_pos);
+            printf("Texture position: %f, line_height: %d\n", tex_pos, line_height);
         }
         
         // Get color from texture
