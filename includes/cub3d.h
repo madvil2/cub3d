@@ -111,7 +111,7 @@ void    render_frame(t_game *game);
 // Texture functions
 void    load_texture(t_game *game, t_texture *texture);
 void    load_textures(t_game *game);
-void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, int tex_x, t_texture *tex);
+void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, int tex_x, t_texture *tex, double perp_wall_dist);
 void    render_3d_view(t_game *game);
 
 #endif 

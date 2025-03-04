@@ -174,7 +174,7 @@ void    load_textures(t_game *game)
     load_texture(game, &game->config.west);
 }
 
-void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, int tex_x, t_texture *tex)
+void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, int tex_x, t_texture *tex, double perp_wall_dist)
 {
     int y;
     int tex_y;
@@ -201,46 +201,54 @@ void    draw_vertical_line(t_game *game, int x, int draw_start, int draw_end, in
         printf("\n=== DEBUG: Vertical Line Drawing ===\n");
         printf("Drawing at x=%d\n", x);
         printf("Draw range: %d to %d (height: %d)\n", draw_start, draw_end, draw_end - draw_start);
+        printf("Wall distance: %f\n", perp_wall_dist);
         printf("Texture X: %d\n", tex_x);
         printf("Texture size: %dx%d\n", tex->width, tex->height);
-        printf("Texture data: bpp=%d, line_size=%d\n", tex_bpp, tex_line_size);
     }
     
-    // Calculate texture step size - this handles wall scaling
-    if (line_height == 0)
-        line_height = 1;  // Prevent division by zero
-        
-    // If line_height > WINDOW_HEIGHT, we're very close to the wall
-    // and need to only show part of the texture (scaled)
-    if (line_height > WINDOW_HEIGHT)
+    // Calculate how much to increase the texture coordinate per screen pixel
+    step = 1.0 * tex->height / line_height;
+    
+    // For very close walls, start from the middle of the texture and show a zoomed portion
+    if (perp_wall_dist < 0.5)
     {
-        // Calculate which part of the texture to show
-        tex_pos = (draw_start - (WINDOW_HEIGHT / 2) + (line_height / 2)) * (tex->height / (double)line_height);
-        step = tex->height / (double)line_height;
+        // Calculate center of the texture
+        double center_tex_y = tex->height / 2.0;
+        
+        // Calculate zoom factor based on distance (closer = more zoom)
+        double zoom_factor = 0.5 / perp_wall_dist;
+        if (zoom_factor > 5.0) zoom_factor = 5.0; // Limit maximum zoom
+        
+        // Calculate visible texture height (smaller = more zoom)
+        double visible_tex_height = tex->height / zoom_factor;
+        
+        // Calculate starting texture position
+        tex_pos = center_tex_y - (visible_tex_height / 2.0);
+        
+        // Recalculate step
+        step = visible_tex_height / line_height;
+        
+        if (debug_count % 60 == 1 && x == WINDOW_WIDTH / 2)
+        {
+            printf("Close wall! Zoom factor: %f\n", zoom_factor);
+            printf("Visible texture height: %f\n", visible_tex_height);
+            printf("Starting tex_pos: %f\n", tex_pos);
+        }
     }
     else
     {
-        // Regular case - map full texture to line height
-        step = tex->height / (double)line_height;
+        // For normal distances, start from the top of the texture
         tex_pos = 0;
     }
     
     y = draw_start;
     while (y < draw_end)
     {
-        // Use modulo for safe texture wrapping instead of bitwise AND
+        // Use modulo for safe texture wrapping
         tex_y = ((int)tex_pos) % tex->height;
         if (tex_y < 0)
             tex_y += tex->height;
         
-        // Debug first pixel of debug line
-        if (debug_count % 60 == 1 && x == WINDOW_WIDTH / 2 && y == draw_start)
-        {
-            printf("First pixel: y=%d, tex_y=%d, step=%f\n", y, tex_y, step);
-            printf("Texture position: %f, line_height: %d\n", tex_pos, line_height);
-        }
-        
-        // Get color from texture
         if (tex_x >= 0 && tex_x < tex->width && tex_y >= 0 && tex_y < tex->height)
         {
             color = *(unsigned int*)(tex_data + (tex_y * tex_line_size + tex_x * (tex_bpp / 8)));
@@ -361,7 +369,7 @@ void    render_3d_view(t_game *game)
         else
             perp_wall_dist = (side_dist_y - delta_dist_y);
 
-        // Calculate line height
+        // Calculate line height based on distance
         line_height = (int)(WINDOW_HEIGHT / perp_wall_dist);
         
         // Calculate lowest and highest pixel to fill in current stripe
@@ -413,8 +421,8 @@ void    render_3d_view(t_game *game)
             printf("Side hit: %s\n", side == 0 ? "Vertical" : "Horizontal");
         }
 
-        // Draw the textured vertical line
-        draw_vertical_line(game, x, draw_start, draw_end, tex_x, tex);
+        // Pass the perpendicular wall distance to the drawing function
+        draw_vertical_line(game, x, draw_start, draw_end, tex_x, tex, perp_wall_dist);
     }
 }
 
