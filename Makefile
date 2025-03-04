@@ -32,9 +32,23 @@ VFLAGS := --leak-check=full --show-leak-kinds=all --track-origins=yes --verbose
 # Source files
 SUB_PATH := .
 
-FILES := main\
-         parser\
-         render
+FILES := game_init\
+         player_movement\
+         input_handling\
+         game_loop\
+         parser_config\
+         parser_colors\
+         parser_textures\
+         parser_map\
+         parser_validate\
+         parser_utils\
+         parser_memory\
+         render_utils\
+         render_minimap\
+         render_textures\
+         render_raycasting\
+         render_walls\
+         render_debug
 
 # Libraries
 MLX := $(MLX_PATH)libmlx.a

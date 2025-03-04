@@ -119,26 +119,87 @@ typedef struct s_line_params
 	t_texture	*tex;
 }	t_line_params;
 
+typedef struct s_ray_params
+{
+	double		ray_dir_x;
+	double		ray_dir_y;
+	int			map_x;
+	int			map_y;
+	double		side_dist_x;
+	double		side_dist_y;
+	double		delta_dist_x;
+	double		delta_dist_y;
+	double		perp_wall_dist;
+	int			step_x;
+	int			step_y;
+	int			side;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	t_texture	*tex;
+	int			tex_x;
+	double		wall_x;
+}	t_ray_params;
+
+/* Game initialization and cleanup */
 int		init_game(t_game *game);
 void	cleanup_game(t_game *game);
-int		handle_keypress(int keycode, t_game *game);
 int		handle_close(t_game *game);
-int		handle_mouse_move(int x, int y, t_game *game);
 
+/* Player movement */
+int		check_collision(t_game *game, double new_x, double new_y);
+void	handle_player_rotation(t_game *game, double rotation);
+void	handle_player_movement(t_game *game, double dir_x, double dir_y);
+
+/* Input handling */
+int		handle_keypress(int keycode, t_game *game);
+int		handle_mouse_move(int x, int y, t_game *game);
+void	handle_mouse_toggle(t_game *game);
+
+/* Game loop */
+int		game_loop(t_game *game);
+
+/* Parser functions */
 int		parse_config(t_game *game, char *file_path);
 int		parse_texture(char *line, t_texture *texture);
 int		parse_color(char *line, t_color *color);
-int		parse_map(t_game *game, char **lines, int start_line);
+int		handle_map_line(t_game *game, char *line, int fd);
+int		validate_map(t_map *map);
 void	free_config(t_config *config);
+void	debug_print_map(t_map *map);
+void	debug_print_config(t_config *config);
+int		is_empty_line(char *line);
+int		free_split(char **split);
+int		is_map_line(char *line);
 
+/* Render functions */
 void	draw_pixel(t_img *img, int x, int y, int color);
+void	draw_rectangle(t_img *img, int x, int y, int size, int color);
+void	flip_buffer_horizontally(t_img *img);
 void	render_map(t_game *game);
 void	render_frame(t_game *game);
+void	render_3d_view(t_game *game);
 
 void	load_texture(t_game *game, t_texture *texture);
 void	load_textures(t_game *game);
 void	draw_vertical_line(t_game *game, int x, int draw_start,
 			int draw_end, int tex_x, t_texture *tex, double perp_wall_dist);
-void	render_3d_view(t_game *game);
+
+void	calculate_wall_drawing(double perp_wall_dist, int *line_height, 
+			int *draw_start, int *draw_end);
+void	calculate_wall_hit(t_game *game, double ray_dir_x, 
+			double ray_dir_y, double perp_wall_dist, int side, 
+			double *wall_x, t_texture **tex, int *tex_x);
+void	render_ceiling_floor(t_game *game);
+void	render_walls(t_game *game);
+
+void	debug_ray_info(double ray_dir_x, double ray_dir_y, 
+			double plane_x, double plane_y, double camera_x);
+void	debug_wall_hit(int map_x, int map_y, double perp_wall_dist,
+			int line_height, int draw_start, int draw_end,
+			double wall_x, int tex_x, t_texture *tex, int side);
+void	debug_texture_info(t_game *game);
+
+void	cast_single_ray(t_game *game, int x, int *debug_count);
 
 #endif
