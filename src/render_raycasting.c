@@ -69,3 +69,15 @@ void	cast_single_ray(t_game *game, int x, int *debug_count)
 	hit.debug_count = debug_count;
 	init_ray_hit(&hit, &ray);
 }
+
+void	init_ray_step(t_game *game, t_ray_params *ray, t_ray_step *step)
+{
+	step->game = game;
+	step->ray_dir_x = ray->ray_dir_x;
+	step->ray_dir_y = ray->ray_dir_y;
+	step->step_x = &ray->step_x;
+	step->step_y = &ray->step_y;
+	step->side_dist_x = &ray->side_dist_x;
+	step->side_dist_y = &ray->side_dist_y;
+	calculate_ray_step(step);
+}
