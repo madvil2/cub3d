@@ -46,12 +46,15 @@ FILES := game_init\
          parser_utils\
          parser_memory\
          render_utils\
+         render_buffer\
          render_minimap\
+         render_minimap_utils\
          render_textures\
          render_raycasting\
          render_raycasting_step\
          render_raycasting_hit\
          render_walls\
+         render_ceiling_floor\
          render_debug
 
 # Libraries

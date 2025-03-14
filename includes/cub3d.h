@@ -205,6 +205,16 @@ typedef struct s_pixel_addr
 	char	*right;
 }	t_pixel_addr;
 
+typedef struct s_vert_line
+{
+	int			x;
+	int			draw_start;
+	int			draw_end;
+	int			tex_x;
+	t_texture	*tex;
+	double		perp_wall_dist;
+}	t_vert_line;
+
 typedef struct s_wall_hit
 {
 	double		ray_dir_x;
@@ -279,8 +289,7 @@ void	render_3d_view(t_game *game);
 
 void	load_texture(t_game *game, t_texture *texture);
 void	load_textures(t_game *game);
-void	draw_vertical_line(t_game *game, int x, int draw_start,
-			int draw_end, int tex_x, t_texture *tex, double perp_wall_dist);
+void	draw_vertical_line(t_game *game, t_vert_line *line);
 
 void	calculate_wall_drawing(double perp_wall_dist, int *line_height, 
 			int *draw_start, int *draw_end);
@@ -341,6 +350,13 @@ typedef struct s_minimap
 	int	height;
 }	t_minimap;
 
+/* Minimap rendering functions */
+void	draw_player_position(t_game *game, int center_x, int center_y);
+void	draw_line(t_img *img, t_line *line);
+void	draw_player_direction(t_game *game, int center_x, int center_y);
+void	draw_player(t_game *game, int map_x, int map_y);
+int		get_cell_color(t_game *game, int x, int y);
+
 /* Texture structures */
 typedef struct s_tex_calc
 {
@@ -363,16 +379,6 @@ typedef struct s_tex_params
 	double		perp_wall_dist;
 }	t_tex_params;
 
-typedef struct s_vert_line
-{
-	int			x;
-	int			draw_start;
-	int			draw_end;
-	int			tex_x;
-	t_texture	*tex;
-	double		perp_wall_dist;
-}	t_vert_line;
-
 /* Raycasting functions */
 void	cast_single_ray(t_game *game, int x, int *debug_count);
 void	init_ray_data(t_game *game, int x, t_ray_params *ray, t_ray_data *data);
@@ -385,7 +391,6 @@ void	calculate_perp_wall_dist(t_ray_params *ray);
 void	init_wall_hit(t_ray_params *ray, t_wall_hit *wall_hit);
 void	create_wall_debug(t_ray_params *ray, t_wall_debug *wall_info);
 void	process_ray_hit(t_ray_hit *hit);
-void	init_ray_hit(t_game *game, int x, t_ray_params *ray, 
-			int *debug_count, t_ray_hit *hit);
+void	init_ray_hit(t_ray_hit *hit, t_ray_params *ray);
 
 #endif

@@ -63,5 +63,9 @@ void	cast_single_ray(t_game *game, int x, int *debug_count)
 	debug_ray(&ray, game, x, debug_count);
 	init_ray_step(game, &ray, &step);
 	init_dda(game, &ray, &dda);
-	init_ray_hit(game, x, &ray, debug_count, &hit);
+	
+	hit.game = game;
+	hit.x = x;
+	hit.debug_count = debug_count;
+	init_ray_hit(&hit, &ray);
 } 

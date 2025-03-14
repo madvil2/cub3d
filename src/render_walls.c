@@ -59,38 +59,6 @@ void	calculate_wall_hit(t_game *game, t_wall_hit *hit)
 		*(hit->tex_x) = (*(hit->tex))->width - *(hit->tex_x) - 1;
 }
 
-void	render_ceiling_floor(t_game *game)
-{
-	t_ceiling_floor	cf;
-
-	cf.ceiling = game->config.ceiling;
-	cf.floor = game->config.floor;
-	cf.ceiling_color = (cf.ceiling.r << 16) | (cf.ceiling.g << 8) | cf.ceiling.b;
-	cf.floor_color = (cf.floor.r << 16) | (cf.floor.g << 8) | cf.floor.b;
-	
-	cf.y = 0;
-	while (cf.y < WINDOW_HEIGHT / 2)
-	{
-		cf.x = 0;
-		while (cf.x < WINDOW_WIDTH)
-		{
-			draw_pixel(&game->img, cf.x, cf.y, cf.ceiling_color);
-			cf.x++;
-		}
-		cf.y++;
-	}
-	while (cf.y < WINDOW_HEIGHT)
-	{
-		cf.x = 0;
-		while (cf.x < WINDOW_WIDTH)
-		{
-			draw_pixel(&game->img, cf.x, cf.y, cf.floor_color);
-			cf.x++;
-		}
-		cf.y++;
-	}
-}
-
 void	render_walls(t_game *game)
 {
 	int			x;

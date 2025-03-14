@@ -107,34 +107,32 @@ static void	init_vertical_line_params(t_line_params *params, t_vert_line *line)
 	calculate_texture_params(&tex_params);
 }
 
-void	draw_vertical_line(t_game *game, int x, int draw_start, 
-	int draw_end, int tex_x, t_texture *tex, double perp_wall_dist)
+static void	render_vertical_line_pixels(t_game *game, t_vert_line *line, 
+	t_line_params *params)
 {
-	int				y;
-	int				color;
-	t_line_params	params;
-	t_vert_line		line;
+	int	y;
+	int	color;
 
-	line.x = x;
-	line.draw_start = draw_start;
-	line.draw_end = draw_end;
-	line.tex_x = tex_x;
-	line.tex = tex;
-	line.perp_wall_dist = perp_wall_dist;
-
-	init_vertical_line_params(&params, &line);
-	y = draw_start;
-	while (y < draw_end)
+	y = line->draw_start;
+	while (y < line->draw_end)
 	{
-		params.tex_y = (int)params.tex_pos;
-		if (params.tex_y >= params.tex->height)
-			params.tex_y = params.tex->height - 1;
-		if (params.tex_y < 0)
-			params.tex_y = 0;
-		color = *(unsigned int *)(params.tex_data + (params.tex_y 
-			* params.tex_line_size + params.tex_x * (params.tex_bpp / 8)));
-		draw_pixel(&game->img, x, y, color);
-		params.tex_pos += params.step;
+		params->tex_y = (int)params->tex_pos;
+		if (params->tex_y >= params->tex->height)
+			params->tex_y = params->tex->height - 1;
+		if (params->tex_y < 0)
+			params->tex_y = 0;
+		color = *(unsigned int *)(params->tex_data + (params->tex_y 
+			* params->tex_line_size + params->tex_x * (params->tex_bpp / 8)));
+		draw_pixel(&game->img, line->x, y, color);
+		params->tex_pos += params->step;
 		y++;
 	}
+}
+
+void	draw_vertical_line(t_game *game, t_vert_line *line)
+{
+	t_line_params	params;
+
+	init_vertical_line_params(&params, line);
+	render_vertical_line_pixels(game, line, &params);
 } 

@@ -49,6 +49,7 @@ void	process_ray_hit(t_ray_hit *hit)
 {
 	t_ray_params	*ray;
 	t_wall_hit		wall_hit;
+	t_vert_line		line;
 
 	ray = hit->ray;
 	calculate_perp_wall_dist(ray);
@@ -65,16 +66,17 @@ void	process_ray_hit(t_ray_hit *hit)
 		debug_wall_hit(&wall_info);
 	}
 	
-	draw_vertical_line(hit->game, hit->x, ray->draw_start, ray->draw_end, 
-		ray->tex_x, ray->tex, ray->perp_wall_dist);
+	line.x = hit->x;
+	line.draw_start = ray->draw_start;
+	line.draw_end = ray->draw_end;
+	line.tex_x = ray->tex_x;
+	line.tex = ray->tex;
+	line.perp_wall_dist = ray->perp_wall_dist;
+	draw_vertical_line(hit->game, &line);
 }
 
-void	init_ray_hit(t_game *game, int x, t_ray_params *ray, 
-	int *debug_count, t_ray_hit *hit)
+void	init_ray_hit(t_ray_hit *hit, t_ray_params *ray)
 {
-	hit->game = game;
 	hit->ray = ray;
-	hit->x = x;
-	hit->debug_count = debug_count;
 	process_ray_hit(hit);
 }
