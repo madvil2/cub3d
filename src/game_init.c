@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/03/04 18:43:20 by kokaimov          #+#    #+#             */
-/*   Updated: 2025/03/04 18:58:47 by kokaimov         ###   ########.fr       */
+/*   Created: 2025/03/04 23:19:07 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:12:01 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,10 @@ void	cleanup_game(t_game *game)
 		mlx_destroy_window(game->mlx, game->win);
 	free_config(&game->config);
 	if (game->mlx)
+	{
+		mlx_destroy_display(game->mlx);
 		free(game->mlx);
+	}
 	exit(0);
 }
 

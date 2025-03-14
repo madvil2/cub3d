@@ -19,9 +19,9 @@ void	handle_mouse_toggle(t_game *game)
 {
 	game->mouse_control = !game->mouse_control;
 	if (game->mouse_control)
-		mlx_mouse_hide();
+		mlx_mouse_hide(game->mlx, game->win);
 	else
-		mlx_mouse_show();
+		mlx_mouse_show(game->mlx, game->win);
 }
 
 int	handle_mouse_move(int x, int y, t_game *game)
@@ -42,7 +42,8 @@ int	handle_mouse_move(int x, int y, t_game *game)
 	handle_player_rotation(game, rotation);
 	if (x < 100 || x > WINDOW_WIDTH - 100)
 	{
-		mlx_mouse_move(game->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+		mlx_mouse_move(game->mlx,
+			game->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 		last_x = WINDOW_WIDTH / 2;
 	}
 	return (0);
