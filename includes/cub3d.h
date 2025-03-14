@@ -181,9 +181,97 @@ void	copy_map_data(t_map *map, char **map_lines);
 void	free_map_lines(char **map_lines);
 int		get_map_dimensions(t_map *map, char **map_lines);
 
+/* Render structures */
+typedef struct s_rect
+{
+	int	x;
+	int	y;
+	int	size;
+	int	color;
+}	t_rect;
+
+typedef struct s_buffer
+{
+	char	*addr;
+	int		bytes_per_pixel;
+	int		line_length;
+	int		width;
+	int		height;
+}	t_buffer;
+
+typedef struct s_pixel_addr
+{
+	char	*left;
+	char	*right;
+}	t_pixel_addr;
+
+typedef struct s_wall_hit
+{
+	double		ray_dir_x;
+	double		ray_dir_y;
+	double		perp_wall_dist;
+	int			side;
+	double		*wall_x;
+	t_texture	**tex;
+	int			*tex_x;
+}	t_wall_hit;
+
+typedef struct s_ceiling_floor
+{
+	int		x;
+	int		y;
+	int		ceiling_color;
+	int		floor_color;
+	t_color	ceiling;
+	t_color	floor;
+}	t_ceiling_floor;
+
+typedef struct s_ray_step
+{
+	t_game	*game;
+	double	ray_dir_x;
+	double	ray_dir_y;
+	int		*step_x;
+	int		*step_y;
+	double	*side_dist_x;
+	double	*side_dist_y;
+}	t_ray_step;
+
+typedef struct s_dda
+{
+	t_game	*game;
+	int		*map_x;
+	int		*map_y;
+	int		step_x;
+	int		step_y;
+	double	*side_dist_x;
+	double	*side_dist_y;
+	double	delta_dist_x;
+	double	delta_dist_y;
+	int		*side;
+}	t_dda;
+
+typedef struct s_ray_data
+{
+	t_game	*game;
+	int		x;
+	double	*ray_dir_x;
+	double	*ray_dir_y;
+	double	*delta_dist_x;
+	double	*delta_dist_y;
+}	t_ray_data;
+
+typedef struct s_ray_hit
+{
+	t_game			*game;
+	int				x;
+	t_ray_params	*ray;
+	int				*debug_count;
+}	t_ray_hit;
+
 /* Render functions */
 void	draw_pixel(t_img *img, int x, int y, int color);
-void	draw_rectangle(t_img *img, int x, int y, int size, int color);
+void	draw_rectangle(t_img *img, t_rect rect);
 void	flip_buffer_horizontally(t_img *img);
 void	render_map(t_game *game);
 void	render_frame(t_game *game);
@@ -196,9 +284,7 @@ void	draw_vertical_line(t_game *game, int x, int draw_start,
 
 void	calculate_wall_drawing(double perp_wall_dist, int *line_height, 
 			int *draw_start, int *draw_end);
-void	calculate_wall_hit(t_game *game, double ray_dir_x, 
-			double ray_dir_y, double perp_wall_dist, int side, 
-			double *wall_x, t_texture **tex, int *tex_x);
+void	calculate_wall_hit(t_game *game, t_wall_hit *hit);
 void	render_ceiling_floor(t_game *game);
 void	render_walls(t_game *game);
 
@@ -231,6 +317,75 @@ void	debug_ray_info(t_ray_debug *ray_info);
 void	debug_wall_hit(t_wall_debug *wall_info);
 void	debug_texture_info(t_game *game);
 
+/* Minimap structures */
+typedef struct s_line
+{
+	double	start_x;
+	double	start_y;
+	double	end_x;
+	double	end_y;
+	int		color;
+}	t_line;
+
+typedef struct s_pixel
+{
+	int	x;
+	int	y;
+}	t_pixel;
+
+typedef struct s_minimap
+{
+	int	x;
+	int	y;
+	int	width;
+	int	height;
+}	t_minimap;
+
+/* Texture structures */
+typedef struct s_tex_calc
+{
+	double		perp_wall_dist;
+	t_texture	*tex;
+	double		*step;
+	double		*tex_pos;
+	int			line_height;
+	int			draw_start;
+}	t_tex_calc;
+
+typedef struct s_tex_params
+{
+	int			*tex_y;
+	double		*tex_pos;
+	double		*step;
+	t_texture	*tex;
+	int			line_height;
+	int			draw_start;
+	double		perp_wall_dist;
+}	t_tex_params;
+
+typedef struct s_vert_line
+{
+	int			x;
+	int			draw_start;
+	int			draw_end;
+	int			tex_x;
+	t_texture	*tex;
+	double		perp_wall_dist;
+}	t_vert_line;
+
+/* Raycasting functions */
 void	cast_single_ray(t_game *game, int x, int *debug_count);
+void	init_ray_data(t_game *game, int x, t_ray_params *ray, t_ray_data *data);
+void	debug_ray(t_ray_params *ray, t_game *game, int x, int *debug_count);
+void	calculate_ray_step(t_ray_step *step);
+void	perform_dda(t_dda *dda);
+void	init_ray_step(t_game *game, t_ray_params *ray, t_ray_step *step);
+void	init_dda(t_game *game, t_ray_params *ray, t_dda *dda);
+void	calculate_perp_wall_dist(t_ray_params *ray);
+void	init_wall_hit(t_ray_params *ray, t_wall_hit *wall_hit);
+void	create_wall_debug(t_ray_params *ray, t_wall_debug *wall_info);
+void	process_ray_hit(t_ray_hit *hit);
+void	init_ray_hit(t_game *game, int x, t_ray_params *ray, 
+			int *debug_count, t_ray_hit *hit);
 
 #endif

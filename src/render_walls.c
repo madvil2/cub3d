@@ -26,76 +26,68 @@ void	calculate_wall_drawing(double perp_wall_dist, int *line_height,
 		*draw_end = WINDOW_HEIGHT - 1;
 }
 
-static void	set_texture_by_direction(double ray_dir_x, double ray_dir_y,
-	int side, t_texture **tex, t_game *game)
+static void	set_texture_by_direction(t_wall_hit *hit, t_game *game)
 {
-	if (side == 0)
+	if (hit->side == 0)
 	{
-		if (ray_dir_x > 0)
-			*tex = &game->config.east;
+		if (hit->ray_dir_x > 0)
+			*(hit->tex) = &game->config.east;
 		else
-			*tex = &game->config.west;
+			*(hit->tex) = &game->config.west;
 	}
 	else
 	{
-		if (ray_dir_y > 0)
-			*tex = &game->config.south;
+		if (hit->ray_dir_y > 0)
+			*(hit->tex) = &game->config.south;
 		else
-			*tex = &game->config.north;
+			*(hit->tex) = &game->config.north;
 	}
 }
 
-void	calculate_wall_hit(t_game *game, double ray_dir_x, 
-	double ray_dir_y, double perp_wall_dist, int side, 
-	double *wall_x, t_texture **tex, int *tex_x)
+void	calculate_wall_hit(t_game *game, t_wall_hit *hit)
 {
-	if (side == 0)
-		*wall_x = game->player.y + perp_wall_dist * ray_dir_y;
+	if (hit->side == 0)
+		*(hit->wall_x) = game->player.y + hit->perp_wall_dist * hit->ray_dir_y;
 	else
-		*wall_x = game->player.x + perp_wall_dist * ray_dir_x;
+		*(hit->wall_x) = game->player.x + hit->perp_wall_dist * hit->ray_dir_x;
 	
-	set_texture_by_direction(ray_dir_x, ray_dir_y, side, tex, game);
+	set_texture_by_direction(hit, game);
 	
-	*wall_x -= floor(*wall_x);
-	*tex_x = (int)(*wall_x * (*tex)->width);
-	if ((side == 0 && ray_dir_x > 0) || (side == 1 && ray_dir_y < 0))
-		*tex_x = (*tex)->width - *tex_x - 1;
+	*(hit->wall_x) -= floor(*(hit->wall_x));
+	*(hit->tex_x) = (int)(*(hit->wall_x) * (*(hit->tex))->width);
+	if ((hit->side == 0 && hit->ray_dir_x > 0) || (hit->side == 1 && hit->ray_dir_y < 0))
+		*(hit->tex_x) = (*(hit->tex))->width - *(hit->tex_x) - 1;
 }
 
 void	render_ceiling_floor(t_game *game)
 {
-	int	x;
-	int	y;
-	int	ceiling_color;
-	int	floor_color;
-	t_color ceiling;
-	t_color floor;
+	t_ceiling_floor	cf;
 
-	ceiling = game->config.ceiling;
-	floor = game->config.floor;
-	ceiling_color = (ceiling.r << 16) | (ceiling.g << 8) | ceiling.b;
-	floor_color = (floor.r << 16) | (floor.g << 8) | floor.b;
+	cf.ceiling = game->config.ceiling;
+	cf.floor = game->config.floor;
+	cf.ceiling_color = (cf.ceiling.r << 16) | (cf.ceiling.g << 8) | cf.ceiling.b;
+	cf.floor_color = (cf.floor.r << 16) | (cf.floor.g << 8) | cf.floor.b;
 	
-	y = 0;
-	while (y < WINDOW_HEIGHT / 2)
+	cf.y = 0;
+	while (cf.y < WINDOW_HEIGHT / 2)
 	{
-		x = 0;
-		while (x < WINDOW_WIDTH)
+		cf.x = 0;
+		while (cf.x < WINDOW_WIDTH)
 		{
-			draw_pixel(&game->img, x, y, ceiling_color);
-			x++;
+			draw_pixel(&game->img, cf.x, cf.y, cf.ceiling_color);
+			cf.x++;
 		}
-		y++;
+		cf.y++;
 	}
-	while (y < WINDOW_HEIGHT)
+	while (cf.y < WINDOW_HEIGHT)
 	{
-		x = 0;
-		while (x < WINDOW_WIDTH)
+		cf.x = 0;
+		while (cf.x < WINDOW_WIDTH)
 		{
-			draw_pixel(&game->img, x, y, floor_color);
-			x++;
+			draw_pixel(&game->img, cf.x, cf.y, cf.floor_color);
+			cf.x++;
 		}
-		y++;
+		cf.y++;
 	}
 }
 

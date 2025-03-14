@@ -23,18 +23,18 @@ void	draw_pixel(t_img *img, int x, int y, int color)
 	}
 }
 
-void	draw_rectangle(t_img *img, int x, int y, int size, int color)
+void	draw_rectangle(t_img *img, t_rect rect)
 {
 	int	i;
 	int	j;
 
 	i = 0;
-	while (i < size)
+	while (i < rect.size)
 	{
 		j = 0;
-		while (j < size)
+		while (j < rect.size)
 		{
-			draw_pixel(img, x + i, y + j, color);
+			draw_pixel(img, rect.x + i, rect.y + j, rect.color);
 			j++;
 		}
 		i++;
@@ -46,25 +46,26 @@ void	flip_buffer_horizontally(t_img *img)
 	int			x;
 	int			y;
 	unsigned int	temp;
-	char		*buffer;
-	int			bytes_per_pixel;
-	char		*left_pixel;
-	char		*right_pixel;
+	t_buffer	buf;
+	t_pixel_addr	pixel;
 
-	buffer = img->addr;
-	bytes_per_pixel = img->bits_per_pixel / 8;
+	buf.addr = img->addr;
+	buf.bytes_per_pixel = img->bits_per_pixel / 8;
+	buf.line_length = img->line_length;
+	buf.width = WINDOW_WIDTH;
+	buf.height = WINDOW_HEIGHT;
 	y = 0;
-	while (y < WINDOW_HEIGHT)
+	while (y < buf.height)
 	{
 		x = 0;
-		while (x < WINDOW_WIDTH / 2)
+		while (x < buf.width / 2)
 		{
-			left_pixel = buffer + (y * img->line_length + x * bytes_per_pixel);
-			right_pixel = buffer + (y * img->line_length + 
-				(WINDOW_WIDTH - 1 - x) * bytes_per_pixel);
-			temp = *(unsigned int *)left_pixel;
-			*(unsigned int *)left_pixel = *(unsigned int *)right_pixel;
-			*(unsigned int *)right_pixel = temp;
+			pixel.left = buf.addr + (y * buf.line_length + x * buf.bytes_per_pixel);
+			pixel.right = buf.addr + (y * buf.line_length + 
+				(buf.width - 1 - x) * buf.bytes_per_pixel);
+			temp = *(unsigned int *)pixel.left;
+			*(unsigned int *)pixel.left = *(unsigned int *)pixel.right;
+			*(unsigned int *)pixel.right = temp;
 			x++;
 		}
 		y++;

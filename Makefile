@@ -49,6 +49,8 @@ FILES := game_init\
          render_minimap\
          render_textures\
          render_raycasting\
+         render_raycasting_step\
+         render_raycasting_hit\
          render_walls\
          render_debug
 
