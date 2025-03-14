@@ -40,7 +40,8 @@ FILES := game_init\
          parser_colors\
          parser_textures\
          parser_map\
-         parser_map_utils\
+         parser_map_utils_1\
+         parser_map_utils_2\
          parser_validate\
          parser_utils\
          parser_memory\
