@@ -202,11 +202,33 @@ void	calculate_wall_hit(t_game *game, double ray_dir_x,
 void	render_ceiling_floor(t_game *game);
 void	render_walls(t_game *game);
 
-void	debug_ray_info(double ray_dir_x, double ray_dir_y, 
-			double plane_x, double plane_y, double camera_x);
-void	debug_wall_hit(int map_x, int map_y, double perp_wall_dist,
-			int line_height, int draw_start, int draw_end,
-			double wall_x, int tex_x, t_texture *tex, int side);
+/* Debug structures */
+typedef struct s_ray_debug
+{
+	double	ray_dir_x;
+	double	ray_dir_y;
+	double	plane_x;
+	double	plane_y;
+	double	camera_x;
+}	t_ray_debug;
+
+typedef struct s_wall_debug
+{
+	int			map_x;
+	int			map_y;
+	double		perp_wall_dist;
+	int			line_height;
+	int			draw_start;
+	int			draw_end;
+	double		wall_x;
+	int			tex_x;
+	t_texture	*tex;
+	int			side;
+}	t_wall_debug;
+
+/* Debug functions */
+void	debug_ray_info(t_ray_debug *ray_info);
+void	debug_wall_hit(t_wall_debug *wall_info);
 void	debug_texture_info(t_game *game);
 
 void	cast_single_ray(t_game *game, int x, int *debug_count);

@@ -12,33 +12,17 @@
 
 #include "../includes/cub3d.h"
 
-void	debug_ray_info(double ray_dir_x, double ray_dir_y, 
-	double plane_x, double plane_y, double camera_x)
+void	debug_ray_info(t_ray_debug *ray_info)
 {
-	(void)ray_dir_x;
-	(void)ray_dir_y;
-	(void)plane_x;
-	(void)plane_y;
-	(void)camera_x;
+	(void)ray_info;
 }
 
-void	debug_wall_hit(int map_x, int map_y, double perp_wall_dist,
-	int line_height, int draw_start, int draw_end,
-	double wall_x, int tex_x, t_texture *tex, int side)
+void	debug_wall_hit(t_wall_debug *wall_info)
 {
-	(void)map_x;
-	(void)map_y;
-	(void)perp_wall_dist;
-	(void)line_height;
-	(void)draw_start;
-	(void)draw_end;
-	(void)wall_x;
-	(void)tex_x;
-	(void)tex;
-	(void)side;
+	(void)wall_info;
 }
 
 void	debug_texture_info(t_game *game)
 {
 	(void)game;
-} 
+}

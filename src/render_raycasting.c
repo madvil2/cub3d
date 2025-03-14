@@ -100,9 +100,22 @@ static void	process_ray_hit(t_game *game, int x, t_ray_params *ray,
 		&ray->tex, &ray->tex_x);
 	
 	if (*debug_count % 60 == 1 && x == WINDOW_WIDTH / 2)
-		debug_wall_hit(ray->map_x, ray->map_y, ray->perp_wall_dist, 
-			ray->line_height, ray->draw_start, ray->draw_end, 
-			ray->wall_x, ray->tex_x, ray->tex, ray->side);
+	{
+		t_wall_debug wall_info;
+		
+		wall_info.map_x = ray->map_x;
+		wall_info.map_y = ray->map_y;
+		wall_info.perp_wall_dist = ray->perp_wall_dist;
+		wall_info.line_height = ray->line_height;
+		wall_info.draw_start = ray->draw_start;
+		wall_info.draw_end = ray->draw_end;
+		wall_info.wall_x = ray->wall_x;
+		wall_info.tex_x = ray->tex_x;
+		wall_info.tex = ray->tex;
+		wall_info.side = ray->side;
+		
+		debug_wall_hit(&wall_info);
+	}
 	
 	draw_vertical_line(game, x, ray->draw_start, ray->draw_end, 
 		ray->tex_x, ray->tex, ray->perp_wall_dist);
@@ -116,8 +129,17 @@ void	cast_single_ray(t_game *game, int x, int *debug_count)
 		&ray.delta_dist_x, &ray.delta_dist_y);
 	
 	if ((*debug_count)++ % 60 == 0 && x == WINDOW_WIDTH / 2)
-		debug_ray_info(ray.ray_dir_x, ray.ray_dir_y, game->player.plane_x, 
-			game->player.plane_y, 2 * x / (double)WINDOW_WIDTH - 1);
+	{
+		t_ray_debug ray_info;
+		
+		ray_info.ray_dir_x = ray.ray_dir_x;
+		ray_info.ray_dir_y = ray.ray_dir_y;
+		ray_info.plane_x = game->player.plane_x;
+		ray_info.plane_y = game->player.plane_y;
+		ray_info.camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
+		
+		debug_ray_info(&ray_info);
+	}
 	
 	calculate_ray_step(game, ray.ray_dir_x, ray.ray_dir_y, &ray.step_x, 
 		&ray.step_y, &ray.side_dist_x, &ray.side_dist_y);
