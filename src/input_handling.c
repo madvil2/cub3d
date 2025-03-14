@@ -59,12 +59,14 @@ int	handle_keypress(int keycode, t_game *game)
 	else if (keycode == KEY_S)
 		handle_player_movement(game, -game->player.dir_x, -game->player.dir_y);
 	else if (keycode == KEY_D)
-		handle_player_movement(game, -game->player.plane_x, -game->player.plane_y);
+		handle_player_movement(game, -game->player.plane_x,
+			-game->player.plane_y);
 	else if (keycode == KEY_A)
-		handle_player_movement(game, game->player.plane_x, game->player.plane_y);
+		handle_player_movement(game, game->player.plane_x,
+			game->player.plane_y);
 	else if (keycode == KEY_RIGHT)
 		handle_player_rotation(game, ROT_SPEED);
 	else if (keycode == KEY_LEFT)
 		handle_player_rotation(game, -ROT_SPEED);
 	return (0);
-} 
+}

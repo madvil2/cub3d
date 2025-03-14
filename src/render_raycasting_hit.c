@@ -34,18 +34,16 @@ void	init_wall_hit(t_ray_params *ray, t_wall_hit *wall_hit)
 void	prepare_ray_hit(t_ray_hit *hit, t_wall_hit *wall_hit)
 {
 	t_ray_params	*ray;
+	t_wall_debug	wall_info;
 
 	ray = hit->ray;
 	calculate_perp_wall_dist(ray);
 	calculate_wall_drawing(ray->perp_wall_dist, &ray->line_height, 
 		&ray->draw_start, &ray->draw_end);
-	
 	init_wall_hit(ray, wall_hit);
 	calculate_wall_hit(hit->game, wall_hit);
-	
 	if (*(hit->debug_count) % 60 == 1 && hit->x == WINDOW_WIDTH / 2)
 	{
-		t_wall_debug wall_info;
 		create_wall_debug(ray, &wall_info);
 		debug_wall_hit(&wall_info);
 	}

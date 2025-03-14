@@ -68,4 +68,4 @@ int	main(int argc, char **argv)
 	setup_hooks(&game);
 	mlx_loop(game.mlx);
 	return (0);
-} 
+}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_raycasting.c                                 :+:      :+:    :+:   */
+/*   render_raycasting.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -17,8 +17,10 @@ static void	prepare_ray_data(t_ray_data *data)
 	double	camera_x;
 
 	camera_x = 2 * data->x / (double)WINDOW_WIDTH - 1;
-	*(data->ray_dir_x) = data->game->player.dir_x + data->game->player.plane_x * camera_x;
-	*(data->ray_dir_y) = data->game->player.dir_y + data->game->player.plane_y * camera_x;
+	*(data->ray_dir_x) = data->game->player.dir_x
+		+ data->game->player.plane_x * camera_x;
+	*(data->ray_dir_y) = data->game->player.dir_y
+		+ data->game->player.plane_y * camera_x;
 	*(data->delta_dist_x) = fabs(1 / *(data->ray_dir_x));
 	*(data->delta_dist_y) = fabs(1 / *(data->ray_dir_y));
 }
@@ -37,16 +39,15 @@ void	init_ray_data(t_game *game, int x, t_ray_params *ray,
 
 void	debug_ray(t_ray_params *ray, t_game *game, int x, int *debug_count)
 {
+	t_ray_debug	ray_info;
+
 	if ((*debug_count)++ % 60 == 0 && x == WINDOW_WIDTH / 2)
 	{
-		t_ray_debug ray_info;
-		
 		ray_info.ray_dir_x = ray->ray_dir_x;
 		ray_info.ray_dir_y = ray->ray_dir_y;
 		ray_info.plane_x = game->player.plane_x;
 		ray_info.plane_y = game->player.plane_y;
 		ray_info.camera_x = 2 * x / (double)WINDOW_WIDTH - 1;
-		
 		debug_ray_info(&ray_info);
 	}
 }
@@ -63,9 +64,8 @@ void	cast_single_ray(t_game *game, int x, int *debug_count)
 	debug_ray(&ray, game, x, debug_count);
 	init_ray_step(game, &ray, &step);
 	init_dda(game, &ray, &dda);
-	
 	hit.game = game;
 	hit.x = x;
 	hit.debug_count = debug_count;
 	init_ray_hit(&hit, &ray);
-} 
+}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_utils.c                                      :+:      :+:    :+:   */
+/*   render_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -18,7 +18,8 @@ void	draw_pixel(t_img *img, int x, int y, int color)
 
 	if (x >= 0 && x < WINDOW_WIDTH && y >= 0 && y < WINDOW_HEIGHT)
 	{
-		dst = img->addr + (y * img->line_length + x * (img->bits_per_pixel / 8));
+		dst = img->addr + (y * img->line_length
+				+ x * (img->bits_per_pixel / 8));
 		*(unsigned int *)dst = color;
 	}
 }
@@ -39,4 +40,4 @@ void	draw_rectangle(t_img *img, t_rect rect)
 		}
 		i++;
 	}
-} 
+}

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_map_utils.c                                 :+:      :+:    :+:   */
+/*   parser_map_utils_1.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/01 00:00:00 by student           #+#    #+#             */
-/*   Updated: 2023/01/01 00:00:00 by student          ###   ########.fr       */
+/*   Created: 2025/03/14 18:58:16 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 21:19:28 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,12 @@ char	**collect_map_lines(char *first_line, int fd)
 		return (NULL);
 	lines[0] = ft_strdup(first_line);
 	i = 1;
-	while ((line = get_next_line(fd)) != NULL)
+	line = get_next_line(fd);
+	while (!line)
 	{
 		if (!process_line(lines, &i, line))
 			return (NULL);
+		line = get_next_line(fd);
 	}
 	lines[i] = NULL;
 	return (lines);
@@ -109,4 +111,4 @@ int	get_map_dimensions(t_map *map, char **map_lines)
 	}
 	map->width = max_width;
 	return (1);
-} 
+}

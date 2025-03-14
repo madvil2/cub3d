@@ -39,4 +39,4 @@ void	render_ray_hit(t_ray_hit *hit)
 	line.tex = ray->tex;
 	line.perp_wall_dist = ray->perp_wall_dist;
 	draw_vertical_line(hit->game, &line);
-} 
+}

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_minimap_utils.c                              :+:      :+:    :+:   */
+/*   render_minimap_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,9 +11,8 @@
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-# define MAP_SCALE 16
-# define PLAYER_SIZE 4
+#define MAP_SCALE 16
+#define PLAYER_SIZE 4
 
 void	draw_player_position(t_game *game, int center_x, int center_y)
 {
@@ -94,4 +93,4 @@ int	get_cell_color(t_game *game, int x, int y)
 		return (0x404040);
 	else
 		return (0x000000);
-} 
+}

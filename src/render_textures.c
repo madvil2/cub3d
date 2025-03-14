@@ -18,7 +18,7 @@ void	load_texture(t_game *game, t_texture *texture)
 	int	height;
 
 	texture->img = mlx_xpm_file_to_image(game->mlx, texture->path, 
-		&width, &height);
+			&width, &height);
 	if (!texture->img)
 		return ;
 	texture->width = width;
@@ -31,4 +31,4 @@ void	load_textures(t_game *game)
 	load_texture(game, &game->config.south);
 	load_texture(game, &game->config.east);
 	load_texture(game, &game->config.west);
-} 
+}

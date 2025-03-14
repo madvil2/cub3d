@@ -84,4 +84,4 @@ int	handle_close(t_game *game)
 {
 	cleanup_game(game);
 	return (0);
-} 
+}

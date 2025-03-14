@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_buffer.c                                     :+:      :+:    :+:   */
+/*   render_buffer.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -34,9 +34,10 @@ static void	swap_buffer_pixels(t_buffer *buf)
 		x = 0;
 		while (x < buf->width / 2)
 		{
-			pixel.left = buf->addr + (y * buf->line_length + x * buf->bytes_per_pixel);
+			pixel.left = buf->addr + (y * buf->line_length
+					+ x * buf->bytes_per_pixel);
 			pixel.right = buf->addr + (y * buf->line_length + 
-				(buf->width - 1 - x) * buf->bytes_per_pixel);
+					(buf->width - 1 - x) * buf->bytes_per_pixel);
 			temp = *(unsigned int *)pixel.left;
 			*(unsigned int *)pixel.left = *(unsigned int *)pixel.right;
 			*(unsigned int *)pixel.right = temp;
@@ -67,13 +68,11 @@ void	render_frame(t_game *game)
 
 	if (frame_count++ % 60 == 0)
 		debug_texture_info(game);
-	
 	buffer_size = WINDOW_WIDTH * WINDOW_HEIGHT * 
 		(game->img.bits_per_pixel / 8);
 	ft_memset(game->img.addr, 0, buffer_size);
-	
 	render_3d_view(game);
 	render_map(game);
 	flip_buffer_horizontally(&game->img);
 	mlx_put_image_to_window(game->mlx, game->win, game->img.img, 0, 0);
-} 
+}

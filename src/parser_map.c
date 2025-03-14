@@ -21,23 +21,29 @@ int	is_map_line(char *line)
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
 	
+//	if (line[i] && (
+//		(line[i] == 'N' && line[i + 1] && line[i + 1] == 'O' && line[i + 2] && line[i + 2] == ' ')
+//			|| (line[i] == 'S' && line[i + 1] && line[i + 1] == 'O' && line[i + 2] && line[i + 2] == ' ')
+//			|| (line[i] == 'W' && line[i + 1] && line[i + 1] == 'E' && line[i + 2] && line[i + 2] == ' ')
+//			|| (line[i] == 'E' && line[i + 1] && line[i + 1] == 'A' && line[i + 2]&& line[i + 2] == ' ')
+//			|| (line[i] == 'F' && line[i + 1] && line[i + 1] == ' ')
+//			|| (line[i] == 'C' && line[i + 1] && line[i + 1] == ' ')))
 	if (line[i] && (
-		(line[i] == 'N' && line[i+1] && line[i+1] == 'O' && line[i+2] && line[i+2] == ' ') ||
-		(line[i] == 'S' && line[i+1] && line[i+1] == 'O' && line[i+2] && line[i+2] == ' ') ||
-		(line[i] == 'W' && line[i+1] && line[i+1] == 'E' && line[i+2] && line[i+2] == ' ') ||
-		(line[i] == 'E' && line[i+1] && line[i+1] == 'A' && line[i+2] && line[i+2] == ' ') ||
-		(line[i] == 'F' && line[i+1] && line[i+1] == ' ') ||
-		(line[i] == 'C' && line[i+1] && line[i+1] == ' ')))
+			(line[i] == 'N' && line[i + 1] == 'O' && line[i + 2] == ' ')
+			|| (line[i] == 'S' && line[i + 1] == 'O' && line[i + 2] == ' ')
+			|| (line[i] == 'W'  && line[i + 1] == 'E' && line[i + 2] == ' ')
+			|| (line[i] == 'E'  && line[i + 1] == 'A' && line[i + 2] == ' ')
+			|| (line[i] == 'F'  && line[i + 1] == ' ')
+			|| (line[i] == 'C'  && line[i + 1] == ' ')))
 	{
 		result = 0;
 	}
 	else
 	{
 		result = (line[i] && (line[i] == '1' || line[i] == '0'
-			|| line[i] == 'N' || line[i] == 'S'
-			|| line[i] == 'E' || line[i] == 'W'));
+					|| line[i] == 'N' || line[i] == 'S'
+					|| line[i] == 'E' || line[i] == 'W'));
 	}
-	
 	return (result);
 }
 
@@ -66,4 +72,4 @@ int	handle_map_line(t_game *game, char *line, int fd)
 	if (ret)
 		debug_print_map(&game->config.map);
 	return (ret);
-} 
+}
