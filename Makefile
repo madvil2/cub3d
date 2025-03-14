@@ -53,6 +53,7 @@ FILES := game_init\
          render_raycasting\
          render_raycasting_step\
          render_raycasting_hit\
+         render_raycasting_draw\
          render_walls\
          render_ceiling_floor\
          render_debug

@@ -390,6 +390,8 @@ void	init_dda(t_game *game, t_ray_params *ray, t_dda *dda);
 void	calculate_perp_wall_dist(t_ray_params *ray);
 void	init_wall_hit(t_ray_params *ray, t_wall_hit *wall_hit);
 void	create_wall_debug(t_ray_params *ray, t_wall_debug *wall_info);
+void	prepare_ray_hit(t_ray_hit *hit, t_wall_hit *wall_hit);
+void	render_ray_hit(t_ray_hit *hit);
 void	process_ray_hit(t_ray_hit *hit);
 void	init_ray_hit(t_ray_hit *hit, t_ray_params *ray);
 
