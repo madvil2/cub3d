@@ -172,6 +172,15 @@ int		is_empty_line(char *line);
 int		free_split(char **split);
 int		is_map_line(char *line);
 
+/* Parser map utils functions */
+int		handle_empty_line_in_map(char **lines, int i, char *line);
+int		process_line(char **lines, int *i, char *line);
+char	**collect_map_lines(char *first_line, int fd);
+int		alloc_map_grid(t_map *map);
+void	copy_map_data(t_map *map, char **map_lines);
+void	free_map_lines(char **map_lines);
+int		get_map_dimensions(t_map *map, char **map_lines);
+
 /* Render functions */
 void	draw_pixel(t_img *img, int x, int y, int color);
 void	draw_rectangle(t_img *img, int x, int y, int size, int color);
