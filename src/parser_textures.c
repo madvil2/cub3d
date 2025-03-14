@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_textures.c                                   :+:      :+:    :+:   */
+/*   parser_textures.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/01 00:00:00 by student           #+#    #+#             */
-/*   Updated: 2023/01/01 00:00:00 by student          ###   ########.fr       */
+/*   Created: 2025/03/04 23:19:07 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 21:53:18 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,4 +27,4 @@ int	parse_texture(char *line, t_texture *texture)
 	if (texture->path[len] == '\n')
 		texture->path[len] = '\0';
 	return (1);
-} 
+}

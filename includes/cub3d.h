@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   cub3d.h                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/03/14 20:26:40 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 21:56:17 by kokaimov         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CUB3D_H
 # define CUB3D_H
 
@@ -36,6 +48,7 @@
 # define ERR_ARGS "Error\nInvalid number of arguments"
 # define ERR_FILE "Error\nCannot open file"
 # define ERR_FORMAT "Error\nInvalid file format"
+# define ERR_PARAM "Error\nMap found before all parameters were set\n"
 # define ERR_MAP "Error\nInvalid map configuration"
 # define ERR_TEXTURE "Error\nInvalid texture configuration"
 # define ERR_COLOR "Error\nInvalid color configuration"

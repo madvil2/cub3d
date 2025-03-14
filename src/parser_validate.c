@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_validate.c                                   :+:      :+:    :+:   */
+/*   parser_validate.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -90,4 +90,4 @@ int	validate_map(t_map *map)
 	if (!validate_map_walls(map))
 		return (0);
 	return (player_count == 1);
-} 
+}

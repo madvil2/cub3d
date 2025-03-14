@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_memory.c                                     :+:      :+:    :+:   */
+/*   parser_memory.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/01 00:00:00 by student           #+#    #+#             */
-/*   Updated: 2023/01/01 00:00:00 by student          ###   ########.fr       */
+/*   Created: 2025/03/04 23:19:07 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 21:53:38 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,4 +38,4 @@ void	free_config(t_config *config)
 	if (config->east.path)
 		free(config->east.path);
 	free_map_grid(&config->map);
-} 
+}

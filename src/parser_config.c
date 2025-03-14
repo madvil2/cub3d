@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser_config.c                                     :+:      :+:    :+:   */
+/*   parser_config.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: student <student@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/01 00:00:00 by student           #+#    #+#             */
-/*   Updated: 2023/01/01 00:00:00 by student          ###   ########.fr       */
+/*   Created: 2025/03/04 23:19:07 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 21:58:24 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +63,25 @@ static int	handle_config_loop(t_game *game, int fd, int *params_set)
 	int		ret;
 
 	ret = 1;
-	while (ret && (line = get_next_line(fd)))
+	line = get_next_line(fd);
+	while (ret && line)
 	{
 		if (is_map_line(line))
 		{
 			*params_set = check_params_set(&game->config);
 			if (!*params_set)
 			{
-				ft_putstr_fd("Error\nMap found before all parameters were set\n", 2);
-				free(line);
-				return (0);
+				ft_putstr_fd(ERR_PARAM, 2);
+				return (free(line), 0);
 			}
 			ret = handle_map_line(game, line, fd);
 			free(line);
-			break;
+			break ;
 		}
 		else
 			ret = parse_config_line(game, line, params_set);
 		free(line);
+		line = get_next_line(fd);
 	}
 	return (ret);
 }
@@ -102,4 +103,4 @@ int	parse_config(t_game *game, char *file_path)
 	ret = handle_config_loop(game, fd, &params_set);
 	close(fd);
 	return (ret && params_set);
-} 
+}

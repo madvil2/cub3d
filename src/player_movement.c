@@ -66,4 +66,4 @@ void	handle_player_movement(t_game *game, double dir_x, double dir_y)
 		game->player.x = new_x;
 		game->player.y = new_y;
 	}
-} 
+}
