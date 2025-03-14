@@ -24,7 +24,7 @@ char	**collect_map_lines(char *first_line, int fd)
 	lines[0] = ft_strdup(first_line);
 	i = 1;
 	line = get_next_line(fd);
-	while (!line)
+	while (line)
 	{
 		if (!process_line(lines, &i, line))
 			return (NULL);
