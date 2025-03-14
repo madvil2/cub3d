@@ -12,26 +12,29 @@
 
 #include "../includes/cub3d.h"
 
-void	calculate_ray_step(t_ray_step *step)
+static void	calculate_ray_step_x(t_ray_step *step, int *map_coord)
 {
-	int	map_coord[2];
-
-	map_coord[0] = (int)step->game->player.x;
-	map_coord[1] = (int)step->game->player.y;
 	if (step->ray_dir_x < 0)
 	{
 		*(step->step_x) = -1;
-		*(step->side_dist_x) = (step->game->player.x - map_coord[0]) * fabs(1 / step->ray_dir_x);
+		*(step->side_dist_x) = (step->game->player.x - map_coord[0]) 
+			* fabs(1 / step->ray_dir_x);
 	}
 	else
 	{
 		*(step->step_x) = 1;
-		*(step->side_dist_x) = (map_coord[0] + 1.0 - step->game->player.x) * fabs(1 / step->ray_dir_x);
+		*(step->side_dist_x) = (map_coord[0] + 1.0 - step->game->player.x) 
+			* fabs(1 / step->ray_dir_x);
 	}
+}
+
+static void	calculate_ray_step_y(t_ray_step *step, int *map_coord)
+{
 	if (step->ray_dir_y < 0)
 	{
 		*(step->step_y) = -1;
-		*(step->side_dist_y) = (step->game->player.y - map_coord[1]) * fabs(1 / step->ray_dir_y);
+		*(step->side_dist_y) = (step->game->player.y - map_coord[1]) 
+			* fabs(1 / step->ray_dir_y);
 	}
 	else
 	{
@@ -39,6 +42,16 @@ void	calculate_ray_step(t_ray_step *step)
 		*(step->side_dist_y) = (map_coord[1] + 1.0 - step->game->player.y)
 			* fabs(1 / step->ray_dir_y);
 	}
+}
+
+void	calculate_ray_step(t_ray_step *step)
+{
+	int	map_coord[2];
+
+	map_coord[0] = (int)step->game->player.x;
+	map_coord[1] = (int)step->game->player.y;
+	calculate_ray_step_x(step, map_coord);
+	calculate_ray_step_y(step, map_coord);
 }
 
 void	perform_dda(t_dda *dda)

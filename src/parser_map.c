@@ -20,14 +20,6 @@ int	is_map_line(char *line)
 	i = 0;
 	while (line[i] && (line[i] == ' ' || line[i] == '\t'))
 		i++;
-	
-	// if (line[i] && (
-	// 	(line[i] == 'N' && line[i + 1] && line[i + 1] == 'O' && line[i + 2] && line[i + 2] == ' ')
-	// 		|| (line[i] == 'S' && line[i + 1] && line[i + 1] == 'O' && line[i + 2] && line[i + 2] == ' ')
-	// 		|| (line[i] == 'W' && line[i + 1] && line[i + 1] == 'E' && line[i + 2] && line[i + 2] == ' ')
-	// 		|| (line[i] == 'E' && line[i + 1] && line[i + 1] == 'A' && line[i + 2]&& line[i + 2] == ' ')
-	// 		|| (line[i] == 'F' && line[i + 1] && line[i + 1] == ' ')
-	// 		|| (line[i] == 'C' && line[i + 1] && line[i + 1] == ' ')))
 	if (line[i] && (
 			(line[i] == 'N' && line[i + 1] == 'O' && line[i + 2] == ' ')
 			|| (line[i] == 'S' && line[i + 1] == 'O' && line[i + 2] == ' ')

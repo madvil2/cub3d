@@ -42,7 +42,10 @@ void	draw_line(t_img *img, t_line *line)
 
 	dx = line->end_x - line->start_x;
 	dy = line->end_y - line->start_y;
-	steps = (fabs(dx) > fabs(dy)) ? fabs(dx) : fabs(dy);
+	if (fabs(dx) > fabs(dy))
+		steps = fabs(dx);
+	else
+		steps = fabs(dy);
 	x_inc = dx / steps;
 	y_inc = dy / steps;
 	while (steps >= 0)
