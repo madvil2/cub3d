@@ -1,44 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_raycasting_step.c                            :+:      :+:    :+:   */
+/*   render_raycasting_step.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 21:50:37 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:14:52 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
 
-void	calculate_ray_step(t_ray_step *step)
+static void	calculate_ray_step_x(t_ray_step *step, int *map_coord)
 {
-	int	map_x;
-	int	map_y;
-
-	map_x = (int)step->game->player.x;
-	map_y = (int)step->game->player.y;
 	if (step->ray_dir_x < 0)
 	{
 		*(step->step_x) = -1;
-		*(step->side_dist_x) = (step->game->player.x - map_x) * fabs(1 / step->ray_dir_x);
+		*(step->side_dist_x) = (step->game->player.x - map_coord[0]) 
+			* fabs(1 / step->ray_dir_x);
 	}
 	else
 	{
 		*(step->step_x) = 1;
-		*(step->side_dist_x) = (map_x + 1.0 - step->game->player.x) * fabs(1 / step->ray_dir_x);
+		*(step->side_dist_x) = (map_coord[0] + 1.0 - step->game->player.x) 
+			* fabs(1 / step->ray_dir_x);
 	}
+}
+
+static void	calculate_ray_step_y(t_ray_step *step, int *map_coord)
+{
 	if (step->ray_dir_y < 0)
 	{
 		*(step->step_y) = -1;
-		*(step->side_dist_y) = (step->game->player.y - map_y) * fabs(1 / step->ray_dir_y);
+		*(step->side_dist_y) = (step->game->player.y - map_coord[1]) 
+			* fabs(1 / step->ray_dir_y);
 	}
 	else
 	{
 		*(step->step_y) = 1;
-		*(step->side_dist_y) = (map_y + 1.0 - step->game->player.y) * fabs(1 / step->ray_dir_y);
+		*(step->side_dist_y) = (map_coord[1] + 1.0 - step->game->player.y)
+			* fabs(1 / step->ray_dir_y);
 	}
+}
+
+void	calculate_ray_step(t_ray_step *step)
+{
+	int	map_coord[2];
+
+	map_coord[0] = (int)step->game->player.x;
+	map_coord[1] = (int)step->game->player.y;
+	calculate_ray_step_x(step, map_coord);
+	calculate_ray_step_y(step, map_coord);
 }
 
 void	perform_dda(t_dda *dda)
@@ -65,18 +78,6 @@ void	perform_dda(t_dda *dda)
 		if (dda->game->config.map.grid[*(dda->map_y)][*(dda->map_x)] == '1')
 			hit = 1;
 	}
-}
-
-void	init_ray_step(t_game *game, t_ray_params *ray, t_ray_step *step)
-{
-	step->game = game;
-	step->ray_dir_x = ray->ray_dir_x;
-	step->ray_dir_y = ray->ray_dir_y;
-	step->step_x = &ray->step_x;
-	step->step_y = &ray->step_y;
-	step->side_dist_x = &ray->side_dist_x;
-	step->side_dist_y = &ray->side_dist_y;
-	calculate_ray_step(step);
 }
 
 void	init_dda(t_game *game, t_ray_params *ray, t_dda *dda)

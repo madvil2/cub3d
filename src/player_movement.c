@@ -6,7 +6,7 @@
 /*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/04 18:43:20 by kokaimov          #+#    #+#             */
-/*   Updated: 2025/03/04 18:58:47 by kokaimov         ###   ########.fr       */
+/*   Updated: 2025/03/14 21:52:19 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,4 @@ void	handle_player_movement(t_game *game, double dir_x, double dir_y)
 		game->player.x = new_x;
 		game->player.y = new_y;
 	}
-} 
+}

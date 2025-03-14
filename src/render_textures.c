@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_textures.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 20:32:24 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:15:05 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	load_texture(t_game *game, t_texture *texture)
 	int	height;
 
 	texture->img = mlx_xpm_file_to_image(game->mlx, texture->path, 
-		&width, &height);
+			&width, &height);
 	if (!texture->img)
 		return ;
 	texture->width = width;
@@ -31,4 +31,4 @@ void	load_textures(t_game *game)
 	load_texture(game, &game->config.south);
 	load_texture(game, &game->config.east);
 	load_texture(game, &game->config.west);
-} 
+}

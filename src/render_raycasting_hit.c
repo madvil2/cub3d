@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   render_raycasting_hit.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 20:26:40 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:14:46 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,16 @@ void	init_wall_hit(t_ray_params *ray, t_wall_hit *wall_hit)
 void	prepare_ray_hit(t_ray_hit *hit, t_wall_hit *wall_hit)
 {
 	t_ray_params	*ray;
+	t_wall_debug	wall_info;
 
 	ray = hit->ray;
 	calculate_perp_wall_dist(ray);
 	calculate_wall_drawing(ray->perp_wall_dist, &ray->line_height, 
 		&ray->draw_start, &ray->draw_end);
-	
 	init_wall_hit(ray, wall_hit);
 	calculate_wall_hit(hit->game, wall_hit);
-	
 	if (*(hit->debug_count) % 60 == 1 && hit->x == WINDOW_WIDTH / 2)
 	{
-		t_wall_debug wall_info;
 		create_wall_debug(ray, &wall_info);
 		debug_wall_hit(&wall_info);
 	}

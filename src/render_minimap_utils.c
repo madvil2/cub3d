@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_minimap_utils.c                              :+:      :+:    :+:   */
+/*   render_minimap_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 21:48:31 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:14:24 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-# define MAP_SCALE 16
-# define PLAYER_SIZE 4
+#define MAP_SCALE 16
+#define PLAYER_SIZE 4
 
 void	draw_player_position(t_game *game, int center_x, int center_y)
 {
@@ -43,7 +42,10 @@ void	draw_line(t_img *img, t_line *line)
 
 	dx = line->end_x - line->start_x;
 	dy = line->end_y - line->start_y;
-	steps = (fabs(dx) > fabs(dy)) ? fabs(dx) : fabs(dy);
+	if (fabs(dx) > fabs(dy))
+		steps = fabs(dx);
+	else
+		steps = fabs(dy);
 	x_inc = dx / steps;
 	y_inc = dy / steps;
 	while (steps >= 0)
@@ -94,4 +96,4 @@ int	get_cell_color(t_game *game, int x, int y)
 		return (0x404040);
 	else
 		return (0x000000);
-} 
+}

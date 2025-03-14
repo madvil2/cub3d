@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_ceiling_floor.c                              :+:      :+:    :+:   */
+/*   render_ceiling_floor.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 20:15:54 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:13:35 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ static void	init_ceiling_floor_colors(t_game *game, t_ceiling_floor *cf)
 {
 	cf->ceiling = game->config.ceiling;
 	cf->floor = game->config.floor;
-	cf->ceiling_color = (cf->ceiling.r << 16) | (cf->ceiling.g << 8) | cf->ceiling.b;
+	cf->ceiling_color = (cf->ceiling.r << 16) | (cf->ceiling.g << 8)
+		| cf->ceiling.b;
 	cf->floor_color = (cf->floor.r << 16) | (cf->floor.g << 8) | cf->floor.b;
 }
 
@@ -56,4 +57,4 @@ void	render_ceiling_floor(t_game *game)
 	init_ceiling_floor_colors(game, &cf);
 	render_ceiling(game, &cf);
 	render_floor(game, &cf);
-} 
+}

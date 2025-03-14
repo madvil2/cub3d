@@ -48,7 +48,7 @@ static void	setup_hooks(t_game *game)
 	mlx_hook(game->win, 2, 1L << 0, handle_keypress, game);
 	mlx_hook(game->win, 6, 1L << 6, handle_mouse_move, game);
 	mlx_hook(game->win, 17, 0, handle_close, game);
-	mlx_mouse_move(game->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
+	mlx_mouse_move(game->mlx, game->win, WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2);
 	mlx_loop_hook(game->mlx, game_loop, game);
 }
 
@@ -68,4 +68,4 @@ int	main(int argc, char **argv)
 	setup_hooks(&game);
 	mlx_loop(game.mlx);
 	return (0);
-} 
+}

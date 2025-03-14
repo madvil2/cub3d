@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_walls.c                                      :+:      :+:    :+:   */
+/*   render_walls.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 20:15:54 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:15:15 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,12 +50,11 @@ void	calculate_wall_hit(t_game *game, t_wall_hit *hit)
 		*(hit->wall_x) = game->player.y + hit->perp_wall_dist * hit->ray_dir_y;
 	else
 		*(hit->wall_x) = game->player.x + hit->perp_wall_dist * hit->ray_dir_x;
-	
 	set_texture_by_direction(hit, game);
-	
 	*(hit->wall_x) -= floor(*(hit->wall_x));
 	*(hit->tex_x) = (int)(*(hit->wall_x) * (*(hit->tex))->width);
-	if ((hit->side == 0 && hit->ray_dir_x > 0) || (hit->side == 1 && hit->ray_dir_y < 0))
+	if ((hit->side == 0 && hit->ray_dir_x > 0)
+		|| (hit->side == 1 && hit->ray_dir_y < 0))
 		*(hit->tex_x) = (*(hit->tex))->width - *(hit->tex_x) - 1;
 }
 
@@ -70,4 +69,4 @@ void	render_walls(t_game *game)
 		cast_single_ray(game, x, &debug_count);
 		x++;
 	}
-} 
+}

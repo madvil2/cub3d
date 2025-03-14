@@ -117,7 +117,7 @@ mre: mfclean all
 # Valgrind rule (Linux only)
 valgrind: $(NAME)
 ifeq ($(UNAME_S),Linux)
-	$(VALGRIND) $(VFLAGS) ./$(NAME) maps/example.cub
+	$(VALGRIND) $(VFLAGS) ./$(NAME) maps/1.cub
 else
 	@echo "Valgrind is not available on macOS. Try 'leaks' instead."
 endif

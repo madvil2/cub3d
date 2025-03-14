@@ -1,19 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   render_minimap.c                                    :+:      :+:    :+:   */
+/*   render_minimap.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: madvil2 <madvil2@student.42.fr>            +#+  +:+       +#+        */
+/*   By: kokaimov <kokaimov@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023-11-15 12:00:00 by madvil2           #+#    #+#             */
-/*   Updated: 2023-11-15 12:00:00 by madvil2          ###   ########.fr       */
+/*   Created: 2025/03/14 20:32:24 by kokaimov          #+#    #+#             */
+/*   Updated: 2025/03/14 22:14:18 by kokaimov         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cub3d.h"
-
-# define MAP_SCALE 16
-# define PLAYER_SIZE 4
+#define MAP_SCALE 16
+#define PLAYER_SIZE 4
 
 static void	swap_pixels(t_game *game, t_pixel p1, t_pixel p2)
 {
@@ -25,13 +24,11 @@ static void	swap_pixels(t_game *game, t_pixel p1, t_pixel p2)
 
 	bytes_per_pixel = game->img.bits_per_pixel / 8;
 	left_addr = game->img.addr + (p1.y * game->img.line_length + 
-		p1.x * bytes_per_pixel);
+			p1.x * bytes_per_pixel);
 	right_addr = game->img.addr + (p2.y * game->img.line_length + 
-		p2.x * bytes_per_pixel);
-	
+			p2.x * bytes_per_pixel);
 	left_color = *(unsigned int *)left_addr;
 	right_color = *(unsigned int *)right_addr;
-	
 	draw_pixel(&game->img, p1.x, p1.y, right_color);
 	draw_pixel(&game->img, p2.x, p2.y, left_color);
 }
@@ -105,4 +102,4 @@ void	render_map(t_game *game)
 	draw_map_cells(game, map_x, map_y);
 	draw_player(game, map_x, map_y);
 	flip_minimap(game, minimap);
-} 
+}
