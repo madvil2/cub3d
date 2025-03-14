@@ -50,6 +50,7 @@ FILES := game_init\
          render_minimap\
          render_minimap_utils\
          render_textures\
+         render_texture_line\
          render_raycasting\
          render_raycasting_step\
          render_raycasting_hit\

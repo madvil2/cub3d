@@ -62,21 +62,20 @@ static void	flip_minimap(t_game *game, t_minimap map)
 	}
 }
 
-void	render_map(t_game *game)
+static void	init_minimap(t_game *game, t_minimap *minimap)
 {
-	int			x;
-	int			y;
-	int			map_x;
-	int			map_y;
-	t_minimap	minimap;
-	t_rect		rect;
+	minimap->x = 10;
+	minimap->y = 10;
+	minimap->width = game->config.map.width * MAP_SCALE;
+	minimap->height = game->config.map.height * MAP_SCALE;
+}
 
-	map_x = 10;
-	map_y = 10;
-	minimap.x = map_x;
-	minimap.y = map_y;
-	minimap.width = game->config.map.width * MAP_SCALE;
-	minimap.height = game->config.map.height * MAP_SCALE;
+static void	draw_map_cells(t_game *game, int map_x, int map_y)
+{
+	int		x;
+	int		y;
+	t_rect	rect;
+
 	y = 0;
 	while (y < game->config.map.height)
 	{
@@ -92,6 +91,18 @@ void	render_map(t_game *game)
 		}
 		y++;
 	}
+}
+
+void	render_map(t_game *game)
+{
+	t_minimap	minimap;
+	int			map_x;
+	int			map_y;
+
+	map_x = 10;
+	map_y = 10;
+	init_minimap(game, &minimap);
+	draw_map_cells(game, map_x, map_y);
 	draw_player(game, map_x, map_y);
 	flip_minimap(game, minimap);
 } 
